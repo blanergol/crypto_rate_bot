@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/blanergol/crypto_rate_bot/config"
-	"github.com/blanergol/crypto_rate_bot/internal/handlers"
+	"github.com/blanergol/crypto_rate_bot/internal/handler"
 
 	"github.com/adshao/go-binance/v2"
 
@@ -21,29 +21,43 @@ func main() {
 
 	binanceClient := binance.NewClient(cfg.BinanceApiKey, cfg.BinanceSecretKey)
 
-	useCases := usecase.New(binanceClient)
-
-	pref := tele.Settings{
+	teleConf := tele.Settings{
 		Token:  cfg.TelegramToken,
 		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
 	}
 
-	bot, err := tele.NewBot(pref)
+	bot, err := tele.NewBot(teleConf)
 	if err != nil {
 		return
 	}
 
+	useCases := usecase.New(binanceClient)
+
+	h := handler.NewHandlers(binanceClient, useCases, cfg)
+
 	bot.Handle("/start", func(c tele.Context) error {
-		return c.Send("Бот помогает отслеживать курсы криптовалют и отправлять оповещения об изменении цены.")
+		return c.Send("Бот помогает отслеживать курсы криптовалют и отправлять оповещения об изменении их цены.")
 	})
 
 	bot.Handle("/current", func(c tele.Context) error {
-		return handlers.TokensHandler(ctx, c, useCases)
+		return h.Tokens(ctx, c)
 	})
 
 	bot.Handle("/price", func(c tele.Context) error {
-		return handlers.PriceHandler(ctx, c, useCases)
+		return h.Price(ctx, c)
+	})
+
+	bot.Handle("/price_background", func(c tele.Context) error {
+		go GetPriceTask(h, ctx, c)
+		return nil
 	})
 
 	bot.Start()
+}
+
+func GetPriceTask(h handler.Handlers, ctx context.Context, c tele.Context) {
+	for {
+		time.Sleep(time.Minute * 1)
+		h.PriceTask(ctx, c)
+	}
 }

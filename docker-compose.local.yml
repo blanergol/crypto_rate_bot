@@ -1,0 +1,32 @@
+version: '3.8'
+
+x-defaults: &defaults
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "200k"
+      max-file: "10"
+      tag: "{{.ImageName}}|{{.Name}}"
+  env_file:
+    - app.env
+  restart: unless-stopped
+  networks:
+    - crypto_rate
+
+networks:
+  crypto_rate:
+    name: crypto_rate
+    driver: overlay
+    attachable: true
+
+services:
+  crypto-rate-srv:
+    <<: *defaults
+    container_name: crypto-rate-srv
+    build:
+      context: .
+    environment:
+      CRYPTO_RATE_BINANCE_API_KEY: ${CRYPTO_RATE_BINANCE_API_KEY}
+      CRYPTO_RATE_BINANCE_API_SECRET: ${CRYPTO_RATE_BINANCE_API_SECRET}
+      CRYPTO_RATE_PRICE_TASK_NOTIFY: ${CRYPTO_RATE_PRICE_TASK_NOTIFY}
+      CRYPTO_RATE_TELEGRAM_TOKEN: ${CRYPTO_RATE_TELEGRAM_TOKEN}
