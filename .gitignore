@@ -1,0 +1,53 @@
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# VScode
+.vscode/
+.fleet/
+debug
+__debug_bin
+
+# IDE
+.idea
+.idea/
+.run
+.emacs.go.project.el
+
+# Packr
+#*-packr.go
+
+# Project binaries
+cmd/*/debug
+cmd/*/main
+bin
+build
+
+# sql-migrate config file
+dbconfig.yml
+
+# vendor
+vendor/
+
+# Mac OS
+.DS_Store
+
+# other
+data/
+/probs/
+/venv/
+
+# Go files after sed
+*.go-e
+
+# Allure report files
+tests/allure-report
+
+# Certificates
+*.pem
+*.crt
+
+ya_cloud_ca.pem
+go_build
+run_build_dev
+.gitlab/
+certs/
