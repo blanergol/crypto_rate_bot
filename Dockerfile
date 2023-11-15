@@ -1,5 +1,7 @@
 FROM golang:1.21.4-alpine3.18
 
+RUN apk add build-base
+
 ENV CGO_ENABLED=1 \
     GO111MODULE=on
 

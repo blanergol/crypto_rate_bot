@@ -11,11 +11,11 @@ x-defaults: &defaults
     - app.env
   restart: unless-stopped
   networks:
-    - crypto_rate
+    - crypto-rate
 
 networks:
-  crypto_rate:
-    name: crypto_rate
+  crypto-rate:
+    name: crypto-rate
     driver: overlay
     attachable: true
 
