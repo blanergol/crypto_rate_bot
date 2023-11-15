@@ -39,6 +39,13 @@ func main() {
 		return c.Send("Бот помогает отслеживать курсы криптовалют и отправлять оповещения об изменении их цены.")
 	})
 
+	bot.Handle("/help", func(c tele.Context) error {
+		return c.Send(
+			"/current - показать текущие цены всех криптовалют с Binance. Для фильтрации валют можно добавить название в формате BTC/BNB/etc. Например /current BNB BTC.\n\n" +
+				"/price - показать изменение цены криптовалюты за определенный период. Например /price BNB BTC 5m.\n\n" +
+				"/price_background - запустить фоновую задачу, которая будет оповещать об изменении цены за последние 5 минут на 3 процента роста.")
+	})
+
 	bot.Handle("/current", func(c tele.Context) error {
 		return h.Tokens(ctx, c)
 	})
