@@ -23,7 +23,7 @@ func (h Handlers) Tokens(ctx context.Context, c tele.Context) error {
 
 	var respList []string
 	for _, token := range *tokens {
-		str := fmt.Sprintf("<strong>Token</strong>: %s; <strong>Symbols</strong>: %s/%s; <strong>Price</strong>: %s\n", token.Name, token.Name, token.Symbol, token.Price)
+		str := fmt.Sprintf("<strong>Token</strong>: %s; <strong>Symbols</strong>: <a href='https://www.binance.com/en/trade/%s?type=spot'>%s%s</a>; <strong>Price</strong>: %s\n", token.Name, token.Name+token.Symbol, token.Name, token.Symbol, token.Price)
 		respList = append(respList, str)
 	}
 

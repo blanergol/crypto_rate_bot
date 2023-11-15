@@ -42,7 +42,7 @@ func (h Handlers) Price(ctx context.Context, c tele.Context) error {
 			smile = "&#128219;"
 		}
 
-		str := fmt.Sprintf("%s<strong>Symbols</strong>: %s; <strong>Price Change</strong>: %s; <strong>Percent</strong>: %s%%;\n", smile, p.Symbol, p.PriceChange, p.PriceChangePercent)
+		str := fmt.Sprintf("%s <strong>Symbols</strong>: <a href='https://www.binance.com/en/trade/%s?type=spot'>%s</a>; <strong>Price Change</strong>: %s; <strong>Percent</strong>: %s%%;\n", smile, p.Symbol, p.Symbol, p.PriceChange, p.PriceChangePercent)
 		respList = append(respList, str)
 	}
 
@@ -67,7 +67,7 @@ func (h Handlers) PriceTask(ctx context.Context, c tele.Context) error {
 			return err
 		}
 		if priceChangePercent > h.cfg.PriceTaskNotify {
-			str := fmt.Sprintf("&#128185;<strong>Symbols</strong>: %s; <strong>Price</strong>: %s; <strong>Percent</strong>: %s%%;\n", p.Symbol, p.PriceChange, p.PriceChangePercent)
+			str := fmt.Sprintf("&#128185; <strong>Symbols</strong>: <a href='https://www.binance.com/en/trade/%s?type=spot'>%s</a>; <strong>Price</strong>: %s; <strong>Percent</strong>: %s%%;\n", p.Symbol, p.Symbol, p.PriceChange, p.PriceChangePercent)
 			respList = append(respList, str)
 		}
 	}
