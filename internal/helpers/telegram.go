@@ -11,7 +11,11 @@ func SendTelegramMessage(c telebot.Context, respList []string) error {
 	var countWords int
 	var resp string
 
-	a := fmt.Sprintf("<strong>Datetime</strong>: %s \n\n", time.Now().String())
+	if len(respList) == 0 {
+		return nil
+	}
+
+	a := fmt.Sprintf("<strong>Datetime</strong>: %s \n\n", time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST"))
 	respList = append([]string{a}, respList...)
 
 	for i, r := range respList {

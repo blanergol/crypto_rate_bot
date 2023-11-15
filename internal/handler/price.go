@@ -37,6 +37,7 @@ func (h Handlers) Price(ctx context.Context, c tele.Context) error {
 		if err != nil {
 			return err
 		}
+
 		smile := "&#128185;"
 		if percent < 0 {
 			smile = "&#128219;"
@@ -66,6 +67,7 @@ func (h Handlers) PriceTask(ctx context.Context, c tele.Context) error {
 		if err != nil {
 			return err
 		}
+
 		if priceChangePercent > h.cfg.PriceTaskNotify {
 			str := fmt.Sprintf("&#128185; <strong>Symbols</strong>: <a href='https://www.binance.com/en/trade/%s?type=spot'>%s</a>; <strong>Price</strong>: %s; <strong>Percent</strong>: %s%%;\n", p.Symbol, p.Symbol, p.PriceChange, p.PriceChangePercent)
 			respList = append(respList, str)
