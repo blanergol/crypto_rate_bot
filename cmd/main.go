@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"time"
+
 	"github.com/blanergol/crypto_rate_bot/config"
+	"github.com/blanergol/crypto_rate_bot/internal/handlers"
 
 	"github.com/adshao/go-binance/v2"
 
-	"github.com/blanergol/crypto_rate_bot/internal/models"
+	tele "gopkg.in/telebot.v3"
+
 	"github.com/blanergol/crypto_rate_bot/internal/usecase"
 )
 
@@ -16,27 +19,31 @@ func main() {
 
 	cfg := config.NewConfig()
 
-	binanceClient := binance.NewClient(cfg.ApiKey, cfg.SecretKey)
+	binanceClient := binance.NewClient(cfg.BinanceApiKey, cfg.BinanceSecretKey)
 
 	useCases := usecase.New(binanceClient)
 
-	tokens, err := useCases.GetListTokensWithCurrentPrice(ctx, models.USDT)
+	pref := tele.Settings{
+		Token:  cfg.TelegramToken,
+		Poller: &tele.LongPoller{Timeout: 10 * time.Second},
+	}
+
+	bot, err := tele.NewBot(pref)
 	if err != nil {
 		return
 	}
 
-	for _, v := range *tokens {
-		fmt.Printf("Token: %s; Symbols: %s/%s; CurrentPrice: %s\n", v.Name, v.Name, v.Symbol, v.Price)
-	}
+	bot.Handle("/start", func(c tele.Context) error {
+		return c.Send("Бот помогает отслеживать курсы криптовалют и отправлять оповещения об изменении цены.")
+	})
 
-	fmt.Println("______________________________________")
+	bot.Handle("/current", func(c tele.Context) error {
+		return handlers.TokensHandler(ctx, c, useCases)
+	})
 
-	prices, err := useCases.GetPriceForListTokens(ctx, *tokens, "5m")
-	if err != nil {
-		return
-	}
+	bot.Handle("/price", func(c tele.Context) error {
+		return handlers.PriceHandler(ctx, c, useCases)
+	})
 
-	for _, v := range *prices {
-		fmt.Printf("Symbols: %s; PriceChange: %s; PriceChangePercent: %s%%;\n", v.Symbol, v.PriceChange, v.PriceChangePercent)
-	}
+	bot.Start()
 }

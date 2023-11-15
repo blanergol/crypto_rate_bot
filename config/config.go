@@ -3,8 +3,9 @@ package config
 import "github.com/spf13/viper"
 
 const (
-	envApiKey    = "API_KEY"
-	envSecretKey = "API_SECRET"
+	envBinanceApiKey    = "BINANCE_API_KEY"
+	envBinanceSecretKey = "BINANCE_API_SECRET"
+	envTelegramToken    = "TELEGRAM_TOKEN"
 )
 
 const (
@@ -12,8 +13,9 @@ const (
 )
 
 type Config struct {
-	ApiKey    string
-	SecretKey string
+	BinanceApiKey    string
+	BinanceSecretKey string
+	TelegramToken    string
 }
 
 func NewConfig() *Config {
@@ -22,7 +24,8 @@ func NewConfig() *Config {
 	v.AutomaticEnv()
 
 	return &Config{
-		ApiKey:    v.GetString(envApiKey),
-		SecretKey: v.GetString(envSecretKey),
+		BinanceApiKey:    v.GetString(envBinanceApiKey),
+		BinanceSecretKey: v.GetString(envBinanceSecretKey),
+		TelegramToken:    v.GetString(envTelegramToken),
 	}
 }

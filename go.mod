@@ -5,6 +5,7 @@ go 1.21
 require (
 	github.com/adshao/go-binance/v2 v2.4.5
 	github.com/spf13/viper v1.17.0
+	gopkg.in/telebot.v3 v3.1.4
 )
 
 require (

@@ -9,19 +9,27 @@ import (
 var _ Tokens = (*UseCasesIml)(nil)
 
 type Tokens interface {
-	GetListTokensWithCurrentPrice(ctx context.Context, token models.TokenName) (*[]models.Token, error)
+	GetListTokensWithCurrentPrice(ctx context.Context, tokensFilter []string) (*[]models.Token, error)
 }
 
-func (u UseCasesIml) GetListTokensWithCurrentPrice(ctx context.Context, token models.TokenName) (*[]models.Token, error) {
+func (u UseCasesIml) GetListTokensWithCurrentPrice(ctx context.Context, tokensFilter []string) (*[]models.Token, error) {
 	var listTokens []models.Token
+	var symbolsFilter []string
 
-	symbols, err := u.bc.NewExchangeInfoService().Symbols().Do(ctx)
+	predict := u.bc.NewExchangeInfoService()
+	if len(tokensFilter) > 0 {
+		for _, f := range tokensFilter {
+			symbolsFilter = append(symbolsFilter, f+models.USDT.String())
+		}
+		predict.Symbols(symbolsFilter...)
+	}
+	symbols, err := predict.Do(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, symbol := range symbols.Symbols {
-		if symbol.QuoteAsset == token.String() {
+		if symbol.QuoteAsset == models.USDT.String() {
 			listTokens = append(listTokens, models.MakeToken(symbol, "0"))
 		}
 	}
