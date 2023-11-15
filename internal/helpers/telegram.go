@@ -17,7 +17,7 @@ func SendTelegramMessage(c telebot.Context, respList []string) error {
 	for i, r := range respList {
 		countWords = countWords + len(r)
 		if countWords > 400 {
-			err := c.Send(resp, &telebot.SendOptions{ParseMode: telebot.ModeMarkdown})
+			err := c.Send(resp, &telebot.SendOptions{ParseMode: telebot.ModeHTML})
 			if err != nil {
 				return c.Send(err)
 			}
